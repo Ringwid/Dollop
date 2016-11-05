@@ -60,9 +60,7 @@ public class DollopLoader {
 
     private void forceShutdown() {
         logger.info("Force shutting down...");
-        for (Thread thread : Thread.getAllStackTraces().keySet()) {
-            thread.interrupt();
-        }
+        Thread.getAllStackTraces().keySet().forEach(Thread::interrupt);
     }
 
     public static void main(String[] args) {
