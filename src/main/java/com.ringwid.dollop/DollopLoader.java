@@ -42,6 +42,10 @@ public class DollopLoader {
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(INITIAL_COMMAND_USAGE + "(" + e.getMessage() + ")");
+            } catch (IllegalArgumentException e) {
+                throw e;
+            } catch (Exception ignored) {
+
             }
         });
 

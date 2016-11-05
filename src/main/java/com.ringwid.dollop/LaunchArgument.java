@@ -16,7 +16,7 @@ public class LaunchArgument {
             fieldInstance.setAccessible(true);
             fieldInstance.set(this, object);
         } catch (Exception ignored) {
-
+            throw new IllegalArgumentException("Option " + field + " can not be set to " + object.getClass());
         }
 
         return this;
