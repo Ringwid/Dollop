@@ -12,7 +12,7 @@ public class LaunchArgument {
 
     public LaunchArgument set(String field, Object object) {
         try {
-            Field fieldInstance = getClass().getDeclaredField("field");
+            Field fieldInstance = getClass().getDeclaredField(field);
             fieldInstance.setAccessible(true);
             fieldInstance.set(this, object);
         } catch (Exception ignored) {
