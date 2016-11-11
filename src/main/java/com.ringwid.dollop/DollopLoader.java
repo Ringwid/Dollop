@@ -32,12 +32,18 @@ public class DollopLoader {
         LaunchArgument launchArgument = new LaunchArgument();
         argMap.forEach((arg, subArg) -> {
             try {
-                switch (arg) {
-                    case "-debugLevel":
-                        launchArgument.set("debugLevel", Integer.valueOf(subArg.get(0)));
+                switch (arg.toLowerCase()) {
+                    case "-debuglevel":
+                        launchArgument.setDebugLevel(Integer.valueOf(subArg.get(0)));
                         break;
                     case "-ui":
-                        launchArgument.set("ui", Boolean.valueOf(subArg.get(0)));
+                        launchArgument.setUserInterface(Boolean.valueOf(subArg.get(0)));
+                        break;
+                    case "-config":
+                        launchArgument.setConfigFile(subArg.get(0));
+                        break;
+                    case "-auction":
+                        launchArgument.setAuctionFiles(subArg);
                         break;
                 }
             } catch (NumberFormatException e) {
