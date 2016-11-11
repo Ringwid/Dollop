@@ -55,7 +55,7 @@ public class DollopLoader {
             }
         });
 
-        this.logger = Logger.getLogger("Dollop/Main");
+        this.logger = Logger.getLogger("com.ringwid.dollop.Dollop");
 
         Dollop dollop = new Dollop(logger, launchArgument);
         dollop.start();

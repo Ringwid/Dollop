@@ -1,5 +1,7 @@
 package com.ringwid.dollop;
 
+import sun.plugin.javascript.navig.Document;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -50,6 +52,9 @@ public class Dollop extends Thread {
             e.printStackTrace();
         }
 
+        logger.info("reading config ad action files...");
+
+        
     }
 
     public void emergencyShutdown() {
