@@ -1,8 +1,9 @@
 package com.ringwid.dollop;
 
-import sun.plugin.javascript.navig.Document;
+import com.ringwid.dollop.api.RemoteAPI;
+import com.ringwid.dollop.config.DollopConfig;
+import com.ringwid.dollop.utils.Utils;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +13,8 @@ import java.util.logging.Logger;
  */
 public class Dollop extends Thread {
 
-    private final Logger logger;
+    private Logger logger;
+    private RemoteAPI remoteAPI;
     private LaunchArgument launchArgument;
     private long lastWorkingTime = System.currentTimeMillis();
 
@@ -52,9 +54,14 @@ public class Dollop extends Thread {
             e.printStackTrace();
         }
 
-        logger.info("reading config ad action files...");
+        logger.info("Reading config ad action files...");
 
-        
+        DollopConfig dollopConfig = new DollopConfig(launchArgument.getConfigFile() == null ? Utils.getJarDir(Dollop.class).getAbsolutePath() + "/config.yml" : launchArgument.getConfigFile());
+        if (dollopConfig.getOnlineMode()) {
+            logger.info("Enabling internet interface...");
+
+            this.remoteAPI = new RemoteAPI(this);
+        }
     }
 
     public void emergencyShutdown() {
