@@ -1,5 +1,8 @@
 package com.ringwid.dollop.website;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +17,10 @@ public class Ebay extends Website {
 
     private final String LOGIN_URL = "http://signin.ebay.com/ws/eBayISAPI.dll";
 
+    public Ebay(WebClient webClient) {
+        super(webClient);
+    }
+
     @Override
     public String getName() {
         return "Ebay";
@@ -22,26 +29,38 @@ public class Ebay extends Website {
     @Override
     public void handleLogin(String username, String password) {
         try {
-            Connection.Response loginPage = Jsoup.connect(LOGIN_URL).method(Connection.Method.GET).timeout(20000).execute();
-            Document loginForm = loginPage.parse();
-            Element elementUsername = loginForm.select("input[placeholder=Email or username]").select("input[class=fld]").first();
-            Element elementPassword = loginForm.select("input[placeholder=Password]").select("input[class=fld]").first();
+            HtmlPage page = this.getWebClient().getPage(LOGIN_URL);
+            HtmlForm form = page.getFormByName("SignInForm");
 
-            Document document = Jsoup.connect(LOGIN_URL)
-                    .data("UsingSSL", "0")
-                    .data("co_partnerId", "2")
-                    .data("siteid", "0")
-                    .cookies(loginPage.cookies())
-                    .timeout(20000)
-                    .post();
-            System.out.println(document.html());
-        } catch (IOException e) {
+            HtmlInput emailField = null;
+            HtmlInput passwordField = null;
+
+            for (HtmlElement input : form.getElementsByTagName("input")) {
+                if (input.getAttribute("placeholder").equals("Email or username") && input.getAttribute("class").equals("fld")) {
+                    emailField = form.getInputByName(input.getAttribute("name"));
+                } else if (input.getAttribute("placeholder").equals("Password") && input.getAttribute("class").equals("fld")) {
+                    passwordField = form.getInputByName(input.getAttribute("name"));
+                }
+            }
+
+            if (emailField == null || passwordField == null) {
+                throw new IllegalStateException("Protocol outdated");
+            }
+
+            emailField.setValueAttribute(username);
+            passwordField.setValueAttribute(password);
+
+            HtmlSubmitInput submitInput = (HtmlSubmitInput) page.getElementById("sgnBt");
+            HtmlPage reply = submitInput.click();
+
+            if (reply.getTitleText().equals("eBay.com")) {
+                setStatus(Status.LOGGED_IN);
+            } else {
+                setStatus(Status.LOGIN_ERROR);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        new Ebay().handleLogin("", "");
     }
 
     @Override
