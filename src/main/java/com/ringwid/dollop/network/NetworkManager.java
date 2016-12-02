@@ -37,7 +37,6 @@ public class NetworkManager {
         webClient.getCookieManager().setCookiesEnabled(true);
         webClient.getCache().setMaxSize(0);
 
-
         try {
             Constructor constructor = supportList.get(website).getDeclaredConstructor(this.getClass());
             this.website = (Website) constructor.newInstance(this);
@@ -49,7 +48,5 @@ public class NetworkManager {
     public void login(String username, String password) {
         website.handleLogin(username, password);
     }
-
-
 
 }
